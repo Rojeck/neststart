@@ -7,7 +7,11 @@ export class UserService {
   constructor(private prismaService: PrismaService) {}
 
   getAllUsers(): Promise<User[]> {
-    return this.prismaService.user.findMany();
+    return this.prismaService.user.findMany({
+      include: {
+        Post: true,
+      },
+    });
   }
 
   getOneById(userId: string): Promise<User> {
@@ -20,10 +24,10 @@ export class UserService {
     return this.prismaService.user.create({ data });
   }
 
-  updateUser(userData: Prisma.UserUpdateInput, userId: string): Promise<User> {
+  updateUser(userData: Prisma.UserUpdateInput, userId: number): Promise<User> {
     return this.prismaService.user.update({
-      where: { id: Number(userId) },
-      data: { name: userData.name },
+      where: { id: userId },
+      data: userData,
     });
   }
 
